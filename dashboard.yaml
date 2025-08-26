@@ -1,0 +1,128 @@
+# Sample Dashboard for your Marstek Venus E battery
+# Add to HA via GUI
+
+type: sections
+max_columns: 4
+title: Marstek
+path: marstek
+icon: mdi:home-battery
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        icon: mdi:car-cruise-control
+        heading: Marstek Controls
+        heading_style: title
+        grid_options:
+          columns: 12
+          rows: 1
+      - type: markdown
+        content: |-
+          **Only valid for controls:**
+          Negative power = DIScharge
+          Positive power = Charge
+      - type: entities
+        entities:
+          - entity: automation.set_marstek_discharging_power
+          - entity: input_number.marstek_discharging_charging_power
+          - entity: switch.marstek_enable_rs485_control_mode
+          - entity: switch.marstek_force_charge_mode
+          - entity: switch.marstek_force_discharge_mode
+          - entity: sensor.marstek_forcible_charge_power
+          - entity: sensor.marstek_forcible_discharge_power
+          - entity: script.marstek_set_forcible_charge
+          - entity: input_select.marstek_user_work_mode_input_select
+          - entity: sensor.marstek_user_work_mode
+  - type: grid
+    cards:
+      - type: heading
+        heading: Marstek
+        heading_style: title
+        badges: []
+        icon: mdi:home-battery
+      - type: heading
+        heading: 5,12 kWh • Marstek Venus E
+        heading_style: subtitle
+        badges:
+          - type: entity
+            show_state: true
+            show_icon: true
+            entity: sensor.marstek_inverter_state
+            name: Laden
+            state_content: name
+            icon: mdi:battery-charging-60
+            color: accent
+            visibility:
+              - condition: state
+                entity: sensor.marstek_inverter_state
+                state: "2"
+          - type: entity
+            show_state: true
+            show_icon: true
+            entity: sensor.marstek_inverter_state
+            name: Entladen
+            state_content: name
+            icon: mdi:home-battery
+            color: green
+            visibility:
+              - condition: state
+                entity: sensor.marstek_inverter_state
+                state: "3"
+        icon: ""
+      - type: gauge
+        entity: sensor.marstek_battery_soc
+        min: 0
+        max: 100
+        needle: false
+        grid_options:
+          columns: 6
+          rows: auto
+        name: SoC
+      - type: gauge
+        entity: sensor.marstek_max_cell_temperature
+        severity:
+          green: 10
+          yellow: 35
+          red: 50
+        needle: false
+        max: 60
+        min: 0
+        grid_options:
+          columns: 6
+          rows: auto
+        name: Cell Temp
+      - type: entities
+        entities:
+          - entity: sensor.marstek_ac_power
+            name: Power (AC)
+          - entity: sensor.marstek_battery_voltage
+            name: Battery Voltage
+          - entity: sensor.marstek_internal_temperature
+            name: Internal Temp
+          - entity: sensor.marstek_min_cell_temperature
+            name: Min Cell Temp
+        show_header_toggle: false
+        footer:
+          type: graph
+          entity: sensor.marstek_battery_soc
+          detail: 1
+          hours_to_show: 72
+          limits:
+            min: 0
+            max: 100
+      - type: entities
+        entities:
+          - entity: sensor.marstek_total_charging_energy
+            name: Total Charged
+          - entity: sensor.marstek_total_discharging_energy
+            name: Total Discharged
+      - type: entity
+        entity: sensor.marstek_efficiency
+        name: Efficiency
+        icon: mdi:percent
+        state_color: false
+      - type: entity
+        entity: sensor.marstek_charge_cycles
+        icon: mdi:reload
+        name: Charge Cycles
+    column_span: 1

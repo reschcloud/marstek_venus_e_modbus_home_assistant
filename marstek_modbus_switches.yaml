@@ -1,0 +1,25 @@
+# Add this file to your configuration directory (where configuration.yaml lives)
+
+- name: "Marstek Enable RS485 Control Mode"
+  unique_id: marstek_enable_rs485_control_mode
+  address: 42000
+  slave: 1
+  command_on: 21930
+  command_off: 21947
+  write_type: holding
+
+- name: "Marstek Force Charge Mode"
+  unique_id: marstek_force_charge_mode
+  address: 42010
+  slave: 1
+  command_on: 1
+  command_off: 0
+  write_type: holding
+
+- name: "Marstek Force Discharge Mode"
+  unique_id: marstek_force_discharge_mode
+  address: 42010
+  slave: 1
+  command_on: 2
+  command_off: 0
+  write_type: holding

@@ -1,0 +1,131 @@
+# Add the following entries to your configuration.yaml inside the respective sections
+
+
+# modbus ######################################################################################################
+modbus:
+  - name: Marstek
+    type: rtuovertcp
+    host: 10.7.19.226
+    port: 502
+    delay: 1
+    message_wait_milliseconds: 35
+    timeout: 5
+
+    sensors: !include marstek_modbus_sensors.yaml
+    switches: !include marstek_modbus_switches.yaml
+
+
+# sensor ######################################################################################################
+sensor:
+  - platform: integration
+    name: Marstek Discharging in kWh
+    unique_id: marstek_discharging_in_kwh
+    source: sensor.marstek_discharging_in_w
+    round: 2
+    unit_prefix: k
+    unit_time: h
+    method: left
+  - platform: integration
+    name: Marstek Charging in kWh
+    unique_id: marstek_charging_in_kwh
+    source: sensor.marstek_charging_in_w
+    round: 2
+    unit_prefix: k
+    unit_time: h
+    method: left
+
+
+# template ######################################################################################################
+template:
+  - sensor:
+      - name: "Marstek Charging in W"
+        unique_id: marstek_charging_in_w
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        state: >
+          {% if states('sensor.marstek_ac_power') | float < 0 %}
+            {{ (states('sensor.marstek_ac_power') | float) * -1 }}
+          {% else %}
+            0
+          {% endif %}
+      - name: "Marstek Discharging in W"
+        unique_id: marstek_discharging_in_w
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        state: >
+          {% if states('sensor.marstek_ac_power') | float > 0 %}
+            {{ (states('sensor.marstek_ac_power') | float) }}
+          {% else %}
+            0
+          {% endif %}
+      - name: "Marstek Force Charge/Discharge Mode Status"
+        unique_id: marstek_force_charge_discharge_mode_status
+        state: >
+          {% set mode = states('sensor.marstek_force_charge_discharge_mode') | int %}
+          {% if mode == 0 %}Stop{% elif mode == 1 %}Charge{% elif mode == 2 %}Discharge{% else %}Unknown{% endif %}
+      - name: "Marstek RS485 Control Mode Status"
+        unique_id: marstek_rs485_control_mode_status
+        state: >
+          {% set mode = states('sensor.marstek_rs485_control_mode') | int %}
+          {% if mode == 21930 %}Enabled{% elif mode == 21947 %}Disabled{% else %}Unknown{% endif %}
+      - name: "Marstek Charge Cycles"
+        unique_id: marstek_charge_cycles
+        state_class: total_increasing
+        state: >
+          {{ (states('sensor.marstek_total_charging_energy')|float / 5.12)|round(0) }}
+      - name: "Marstek Efficiency"
+        unique_id: marstek_efficiency
+        state_class: measurement
+        unit_of_measurement: "%"
+        state: >
+          {{ ((states('sensor.marstek_total_discharging_energy')|float / states('sensor.marstek_total_charging_energy')|float) *100 )|round(0) }}
+
+
+# switch ######################################################################################################
+switch:
+  - platform: template
+    switches:
+      marstek_rs485_control_mode_switch:
+        friendly_name: "Marstek RS485 Control Mode Switch"
+        unique_id: marstek_rs485_control_mode_switch
+        value_template: >
+          {% set mode = states('sensor.marstek_rs485_control_mode') | int %}
+          {{ mode == 21930 }}
+        turn_on:
+          service: modbus.write_register
+          data:
+            hub: Marstek
+            unit: 1
+            address: 42000
+            value: 21930
+        turn_off:
+          service: modbus.write_register
+          data:
+            hub: Marstek
+            unit: 1
+            address: 42000
+            value: 21947
+
+
+# input_number ######################################################################################################
+input_number:
+  marstek_discharging_charging_power:
+    name: "Marstek (dis)charging power"
+    min: -2500
+    max: 2500
+    step: 5
+    unit_of_measurement: W
+    mode: slider
+
+
+# input_select ######################################################################################################
+input_select:
+  marstek_user_work_mode_input_select:
+    name: Marstek User Work Mode
+    options:
+      - "Manual"
+      - "Anti-Feed"
+      - "Trade Mode"
+    initial: "Manual"

@@ -1,0 +1,217 @@
+# Add this file to your configuration directory (where configuration.yaml lives)
+
+- name: "Marstek Battery Voltage"
+  unique_id: marstek_battery_voltage
+  address: 32100
+  slave: 1
+  scan_interval: 10
+  input_type: holding
+  data_type: uint16
+  unit_of_measurement: V
+  device_class: voltage
+  state_class: measurement
+  scale: 0.01
+  offset: 0
+  precision: 2
+
+- name: "Marstek Battery SOC"
+  unique_id: marstek_battery_soc
+  address: 32104
+  slave: 1
+  scan_interval: 30
+  input_type: holding
+  data_type: uint16
+  unit_of_measurement: "%"
+  device_class: battery
+  state_class: measurement
+  scale: 1
+  offset: 0
+  precision: 0
+
+- name: "Marstek AC Power"
+  unique_id: marstek_ac_power
+  address: 32202
+  slave: 1
+  scan_interval: 10
+  input_type: holding
+  data_type: int32
+  unit_of_measurement: W
+  device_class: power
+  state_class: measurement
+  scale: 1
+  offset: 0
+  precision: 0
+
+- name: "Marstek Total Charging Energy"
+  unique_id: marstek_total_charging_energy
+  address: 33000
+  slave: 1
+  scan_interval: 30
+  input_type: holding
+  data_type: uint32
+  unit_of_measurement: kWh
+  device_class: energy
+  state_class: total_increasing
+  scale: 0.01
+  offset: 0
+  precision: 1
+
+- name: "Marstek Total Discharging Energy"
+  unique_id: marstek_total_discharging_energy
+  address: 33002
+  slave: 1
+  scan_interval: 30
+  input_type: holding
+  data_type: uint32
+  unit_of_measurement: kWh
+  device_class: energy
+  state_class: total_increasing
+  scale: 0.01
+  offset: 0
+  precision: 1
+
+- name: "Marstek Internal Temperature"
+  unique_id: marstek_internal_temperature
+  address: 35000
+  slave: 1
+  scan_interval: 30
+  input_type: holding
+  data_type: int16
+  unit_of_measurement: "°C"
+  device_class: temperature
+  state_class: measurement
+  scale: 0.1
+  offset: 0
+  precision: 1
+
+- name: "Marstek Internal MOS1 Temperature"
+  unique_id: marstek_internal_mos1_temperature
+  address: 35001
+  slave: 1
+  scan_interval: 30
+  input_type: holding
+  data_type: int16
+  unit_of_measurement: "°C"
+  device_class: temperature
+  state_class: measurement
+  scale: 0.1
+  offset: 0
+  precision: 1
+
+- name: "Marstek Internal MOS2 Temperature"
+  unique_id: marstek_internal_mos2_temperature
+  address: 35002
+  slave: 1
+  scan_interval: 30
+  input_type: holding
+  data_type: int16
+  unit_of_measurement: "°C"
+  device_class: temperature
+  state_class: measurement
+  scale: 0.1
+  offset: 0
+  precision: 1
+
+- name: "Marstek Max Cell Temperature"
+  unique_id: marstek_max_cell_temperature
+  address: 35010
+  slave: 1
+  scan_interval: 30
+  input_type: holding
+  data_type: int16
+  unit_of_measurement: "°C"
+  device_class: temperature
+  state_class: measurement
+  scale: 0.1
+  offset: 0
+  precision: 1
+
+- name: "Marstek Min Cell Temperature"
+  unique_id: marstek_min_cell_temperature
+  address: 35011
+  slave: 1
+  scan_interval: 30
+  input_type: holding
+  data_type: int16
+  unit_of_measurement: "°C"
+  device_class: temperature
+  state_class: measurement
+  scale: 0.1
+  offset: 0
+  precision: 1
+
+- name: "Marstek Inverter State"
+  unique_id: marstek_inverter_state
+  address: 35100
+  slave: 1
+  scan_interval: 5
+  input_type: holding
+  data_type: uint16
+  unit_of_measurement: ""
+  state_class: measurement
+
+- name: "Marstek RS485 Control Mode"
+  unique_id: marstek_rs485_control_mode
+  address: 42000
+  slave: 1
+  input_type: holding
+  data_type: uint16
+  unit_of_measurement: ""
+  scale: 1
+  offset: 0
+  precision: 0
+
+- name: "Marstek Force Charge/Discharge Mode"
+  unique_id: marstek_force_charge_discharge_mode
+  address: 42010
+  slave: 1
+  input_type: holding
+  data_type: uint16
+  unit_of_measurement: ""
+  scale: 1
+  offset: 0
+  precision: 0
+
+- name: "Marstek Charge to SOC"
+  unique_id: marstek_charge_to_soc
+  address: 42011
+  slave: 1
+  input_type: holding
+  data_type: uint16
+  unit_of_measurement: "%"
+  scale: 1
+  offset: 0
+  precision: 0
+
+- name: "Marstek Forcible Charge Power"
+  unique_id: marstek_forcible_charge_power
+  address: 42020
+  slave: 1
+  input_type: holding
+  data_type: uint16
+  unit_of_measurement: W
+  scale: 1
+  offset: 0
+  precision: 0
+
+- name: "Marstek Forcible Discharge Power"
+  unique_id: marstek_forcible_discharge_power
+  address: 42021
+  slave: 1
+  input_type: holding
+  data_type: uint16
+  unit_of_measurement: W
+  scale: 1
+  offset: 0
+  precision: 0
+
+- name: "Marstek User Work Mode"
+  unique_id: marstek_user_work_mode
+  address: 43000
+  slave: 1
+  input_type: holding
+  data_type: uint16
+  unit_of_measurement: ""
+  scale: 1
+  offset: 0
+  precision: 0
