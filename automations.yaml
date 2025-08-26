@@ -2,65 +2,6 @@
 # Add one-by-one to HA via GUI
 
 
-# Reset Marstek Control Mode ######################################################################################################
-alias: Reset Marstek Control Mode
-description: 'Reset Marstek control code if the target (dis)charge value is not met. Skip if discharge target is over 800W or if SoC is below 15%, under which conditions the target is usually impossible to be met.'
-triggers:
-- trigger: template
-  value_template: '{{
-    not (
-    -30 <
-    (states(''input_number.marstek_discharging_charging_power'')|float
-    + states(''sensor.marstek_ac_power'')|float)
-    < 30
-    )
-    }}'
-  for:
-    hours: 0
-    minutes: 30
-    seconds: 0
-conditions:
-- condition: numeric_state
-  entity_id: sensor.marstek_battery_soc
-  above: 15
-- condition: numeric_state
-  entity_id: input_number.marstek_discharging_charging_power
-  above: -800
-actions:
-- action: switch.turn_off
-  metadata: {}
-  data: {}
-  target:
-    entity_id:
-    - switch.marstek_force_charge_mode
-    - switch.marstek_force_discharge_mode
-    - switch.marstek_enable_rs485_control_mode
-- delay:
-    hours: 0
-    minutes: 0
-    seconds: 10
-    milliseconds: 0
-- action: switch.turn_on
-  metadata: {}
-  data: {}
-  target:
-    entity_id:
-    - switch.marstek_enable_rs485_control_mode
-- delay:
-    hours: 0
-    minutes: 0
-    seconds: 10
-    milliseconds: 0
-- action: switch.turn_on
-  metadata: {}
-  data: {}
-  target:
-    entity_id:
-    - switch.marstek_force_charge_mode
-    - switch.marstek_force_discharge_mode
-mode: single
-
-
 # Marstek Sync Modbus and Input Select ######################################################################################################
 alias: Marstek Sync Modbus and Input Select
 description: 'Sync Modbus sensor with input select, so that changes in HA are visible in the Marstek app and vice versa.'
@@ -94,7 +35,7 @@ actions:
     - data:
         hub: Marstek
         address: 43000
-        slave: 1
+        unit: 1
         value: "{% if is_state('input_select.marstek_user_work_mode_input_select',
           'Manual') %}\n  0\n{% elif is_state('input_select.marstek_user_work_mode_input_select',
           'Anti-Feed') %}\n  1\n{% elif is_state('input_select.marstek_user_work_mode_input_select',

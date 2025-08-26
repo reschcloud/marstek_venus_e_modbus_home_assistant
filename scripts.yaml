@@ -15,19 +15,19 @@ sequence:
           - data:
               hub: Marstek
               address: 42010
-              slave: 1
+              unit: 1
               value: 0
             action: modbus.write_register
           - data:
               hub: Marstek
               address: 42020
-              slave: 1
+              unit: 1
               value: 0
             action: modbus.write_register
           - data:
               hub: Marstek
               address: 42021
-              slave: 1
+              unit: 1
               value: 0
             action: modbus.write_register
       - conditions:
@@ -39,7 +39,7 @@ sequence:
           - data:
               hub: Marstek
               address: 42021
-              slave: 1
+              unit: 1
               value: >-
                 {{ states('input_number.marstek_discharging_charging_power')
                 | int | abs }}
@@ -47,7 +47,7 @@ sequence:
           - data:
               hub: Marstek
               address: 42010
-              slave: 1
+              unit: 1
               value: 2
             action: modbus.write_register
       - conditions:
@@ -59,7 +59,7 @@ sequence:
           - data:
               hub: Marstek
               address: 42020
-              slave: 1
+              unit: 1
               value: >-
                 {{ states('input_number.marstek_discharging_charging_power')
                 | int | abs }}
@@ -67,6 +67,6 @@ sequence:
           - data:
               hub: Marstek
               address: 42010
-              slave: 1
+              unit: 1
               value: 1
             action: modbus.write_register
