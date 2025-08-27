@@ -129,3 +129,30 @@ input_select:
       - "Anti-Feed"
       - "Trade Mode"
     initial: "Manual"
+
+# select ######################################################################################################
+select:
+  - platform: template
+    name: "Marstek Control Mode"
+    options:
+      - "Off"
+      - "Force Charge"
+      - "Force Discharge"
+    state: >
+      {% set val = states('sensor.marstek_force_charge_discharge_mode')|int %}
+      {% if val == 0 %} Off
+      {% elif val == 1 %} Force Charge
+      {% elif val == 2 %} Force Discharge
+      {% else %} Unknown
+      {% endif %}
+    select_option:
+      - service: modbus.write_register
+        data:
+          hub: Marstek
+          unit: 1
+          address: 42010
+          value: >
+            {% if option == "Force Charge" %} 1
+            {% elif option == "Force Discharge" %} 2
+            {% else %} 0
+            {% endif %}
