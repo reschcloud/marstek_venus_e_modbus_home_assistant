@@ -1,11 +1,11 @@
-# Add the following entries to your configuration.yaml inside the respective sections
+# Edit Modbus IP Address and Port and add the following entries to your configuration.yaml inside the respective sections
 
 
 # modbus ######################################################################################################
 modbus:
   - name: Marstek
     type: rtuovertcp
-    host: 10.7.19.226
+    host: 192.0.2.1
     port: 502
     delay: 1
     message_wait_milliseconds: 35
