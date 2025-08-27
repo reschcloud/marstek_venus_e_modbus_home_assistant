@@ -26,8 +26,6 @@ sections:
           - entity: automation.set_marstek_discharging_power
           - entity: input_number.marstek_discharging_charging_power
           - entity: switch.marstek_enable_rs485_control_mode
-          - entity: switch.marstek_force_charge_mode
-          - entity: switch.marstek_force_discharge_mode
           - entity: sensor.marstek_forcible_charge_power
           - entity: sensor.marstek_forcible_discharge_power
           - entity: script.marstek_set_forcible_charge
