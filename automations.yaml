@@ -108,7 +108,7 @@ mode: single
 # Re-activate Marstek RS485 Control Mode ######################################################################################################
 alias: Re-activate Marstek RS485 Control Mode
 description: >-
-  Resets RS485 Control Mode to ON, if the target (dis)charge power differs significantly from the actual value. Exceptions: Will not run, if the target ist over 800W (in case your Marstek ist set to a max. output of 800W) or if the SoC is below 15%, where it is pluasible that the target cannot be met.
+  Resets RS485 Control Mode to ON, if the target (dis)charge power differs significantly from the actual value. Exceptions: Will not run, if the target ist over 800W (in case your Marstek ist set to the default max. output of 800W) or if the SoC is below 15% or above 95%, where it is plausible that the target cannot be met.
 triggers:
   - trigger: template
     value_template: |-
@@ -128,6 +128,7 @@ conditions:
   - condition: numeric_state
     entity_id: sensor.marstek_battery_soc
     above: 15
+    below: 95
   - condition: numeric_state
     entity_id: input_number.marstek_discharging_charging_power
     above: -800
