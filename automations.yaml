@@ -103,3 +103,56 @@ actions:
       entity_id: input_number.marstek_discharging_charging_power
     alias: 'Else: Set power to 0'
 mode: single
+
+
+# Re-activate Marstek RS485 Control Mode ######################################################################################################
+alias: Re-activate Marstek RS485 Control Mode
+description: >-
+  Resets RS485 Control Mode to ON, if the target (dis)charge power differs significantly from the actual value. Exceptions: Will not run, if the target ist over 800W (in case your Marstek ist set to a max. output of 800W) or if the SoC is below 15%, where it is pluasible that the target cannot be met.
+triggers:
+  - trigger: template
+    value_template: |-
+      {{
+      not (
+      -30 <
+      (states('input_number.marstek_discharging_charging_power')|float
+      + states('sensor.marstek_ac_power')|float)
+      < 30
+      )
+      }}
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+conditions:
+  - condition: numeric_state
+    entity_id: sensor.marstek_battery_soc
+    above: 15
+  - condition: numeric_state
+    entity_id: input_number.marstek_discharging_charging_power
+    above: -800
+actions:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+        - switch.marstek_enable_rs485_control_mode
+    enabled: true
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+    enabled: true
+  - action: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+        - switch.marstek_enable_rs485_control_mode
+    enabled: true
+  - action: script.marstek_set_forcible_charge
+    metadata: {}
+    data: {}
+mode: single
