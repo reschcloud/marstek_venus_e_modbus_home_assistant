@@ -1,0 +1,7 @@
+homeassistant:
+  packages: !include_dir_named packages
+
+logbook:
+  exclude:
+    entities:
+      - automation.set_marstek_discharging_power

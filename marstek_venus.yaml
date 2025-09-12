@@ -1,0 +1,382 @@
+# modbus ###################################################################################################################################################################
+
+# Edit Modbus IP Address and Port according to your setup!
+modbus:
+  - name: Marstek
+    type: rtuovertcp
+    host: 192.0.2.1
+    port: 502
+    delay: 1
+    message_wait_milliseconds: 35
+    timeout: 5
+
+    sensors:
+      - name: "Marstek Battery Voltage"
+        unique_id: marstek_battery_voltage
+        address: 32100
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: V
+        device_class: voltage
+        state_class: measurement
+        scale: 0.01
+        offset: 0
+        precision: 2
+
+      - name: "Marstek Battery SOC"
+        unique_id: marstek_battery_soc
+        address: 32104
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "%"
+        device_class: battery
+        state_class: measurement
+        scale: 1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek AC Power"
+        unique_id: marstek_ac_power
+        address: 32202
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int32
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        scale: 1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek Total Charging Energy"
+        unique_id: marstek_total_charging_energy
+        address: 33000
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint32
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        scale: 0.01
+        offset: 0
+        precision: 1
+
+      - name: "Marstek Total Discharging Energy"
+        unique_id: marstek_total_discharging_energy
+        address: 33002
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint32
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        scale: 0.01
+        offset: 0
+        precision: 1
+
+      - name: "Marstek Internal Temperature"
+        unique_id: marstek_internal_temperature
+        address: 35000
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek Internal MOS1 Temperature"
+        unique_id: marstek_internal_mos1_temperature
+        address: 35001
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek Internal MOS2 Temperature"
+        unique_id: marstek_internal_mos2_temperature
+        address: 35002
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek Max Cell Temperature"
+        unique_id: marstek_max_cell_temperature
+        address: 35010
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek Min Cell Temperature"
+        unique_id: marstek_min_cell_temperature
+        address: 35011
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek Inverter State"
+        unique_id: marstek_inverter_state
+        address: 35100
+        slave: 1
+        scan_interval: 5
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: ""
+        state_class: measurement
+
+      - name: "Marstek RS485 Control Mode"
+        unique_id: marstek_rs485_control_mode
+        address: 42000
+        slave: 1
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: ""
+        scale: 1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek Force Charge/Discharge Mode"
+        unique_id: marstek_force_charge_discharge_mode
+        address: 42010
+        slave: 1
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: ""
+        scale: 1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek Forcible Charge Power"
+        unique_id: marstek_forcible_charge_power
+        address: 42020
+        slave: 1
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: W
+        scale: 1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek Forcible Discharge Power"
+        unique_id: marstek_forcible_discharge_power
+        address: 42021
+        slave: 1
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: W
+        scale: 1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek User Work Mode"
+        unique_id: marstek_user_work_mode
+        address: 43000
+        slave: 1
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: ""
+        scale: 1
+        offset: 0
+        precision: 0
+
+
+    switches:
+        - name: "Marstek Enable RS485 Control Mode"
+          unique_id: marstek_enable_rs485_control_mode
+          address: 42000
+          slave: 1
+          command_on: 21930
+          command_off: 21947
+          write_type: holding
+
+
+# template #################################################################################################################################################################
+
+template:
+  - sensor:
+
+      - name: "Marstek Charge Cycles"
+        unique_id: marstek_charge_cycles
+        state_class: total_increasing
+        state: "{{ (states('sensor.marstek_total_charging_energy')|float / 5.12)|round(0) }}"
+
+      - name: "Marstek Efficiency"
+        unique_id: marstek_efficiency
+        unit_of_measurement: "%"
+        state_class: measurement
+        state: "{{ ((states('sensor.marstek_total_discharging_energy')|float / states('sensor.marstek_total_charging_energy')|float) *100 )|round(0) }}"
+
+      - name: "Marstek Force Charge/Discharge Mode Status"
+        unique_id: marstek_force_charge_discharge_mode_status
+        state: >
+          {% set mode = states('sensor.marstek_force_charge_discharge_mode') | int %}
+          {% if mode == 0 %}Stop{% elif mode == 1 %}Charge{% elif mode == 2 %}Discharge{% else %}Unknown{% endif %}
+
+      - name: "Marstek RS485 Control Mode Status"
+        unique_id: marstek_rs485_control_mode_status
+        state: >
+          {% set mode = states('sensor.marstek_rs485_control_mode') | int %}
+          {% if mode == 21930 %}Enabled{% elif mode == 21947 %}Disabled{% else %}Unknown{% endif %}
+
+
+# switch ###############################################
+
+switch:
+  - platform: template
+    switches:
+      marstek_rs485_control_mode_switch:
+        friendly_name: "Marstek RS485 Control Mode Switch"
+        unique_id: marstek_rs485_control_mode_switch
+        value_template: >
+          {% set mode = states('sensor.marstek_rs485_control_mode') | int %}
+          {{ mode == 21930 }}
+        turn_on:
+          service: modbus.write_register
+          data:
+            hub: Marstek
+            unit: 1
+            address: 42000
+            value: 21930
+        turn_off:
+          service: modbus.write_register
+          data:
+            hub: Marstek
+            unit: 1
+            address: 42000
+            value: 21947
+
+# input_number #############################################################################################################################################################
+
+input_number:
+  marstek_discharging_charging_power:
+    name: "Marstek (dis)charging power"
+    min: -2500
+    max: 2500
+    step: 5
+    unit_of_measurement: W
+    mode: slider
+
+
+
+# input_select #############################################################################################################################################################
+
+input_select:
+  marstek_user_work_mode_input_select:
+    name: Marstek User Work Mode
+    options:
+      - "Manual"
+      - "Anti-Feed"
+      - "Trade Mode"
+    initial: "Manual"
+
+
+# script ################################################
+
+script:
+  marstek_set_forcible_charge:
+    alias: Marstek Set Forcible Charge
+    description: "yaml"
+    icon: mdi:battery-charging-40
+    sequence:
+      - choose:
+          - conditions:
+              - condition: numeric_state
+                entity_id: input_number.marstek_discharging_charging_power
+                above: -1
+                below: 1
+            sequence:
+              - data:
+                  hub: Marstek
+                  address: 42010
+                  unit: 1
+                  value: 0
+                action: modbus.write_register
+              - data:
+                  hub: Marstek
+                  address: 42020
+                  unit: 1
+                  value: 0
+                action: modbus.write_register
+              - data:
+                  hub: Marstek
+                  address: 42021
+                  unit: 1
+                  value: 0
+                action: modbus.write_register
+          - conditions:
+              - condition: numeric_state
+                entity_id: input_number.marstek_discharging_charging_power
+                above: -2501
+                below: -10
+            sequence:
+              - data:
+                  hub: Marstek
+                  address: 42021
+                  unit: 1
+                  value: >-
+                    {{ states('input_number.marstek_discharging_charging_power')
+                    | int | abs }}
+                action: modbus.write_register
+              - data:
+                  hub: Marstek
+                  address: 42010
+                  unit: 1
+                  value: 2
+                action: modbus.write_register
+          - conditions:
+              - condition: numeric_state
+                entity_id: input_number.marstek_discharging_charging_power
+                above: 10
+                below: 2501
+            sequence:
+              - data:
+                  hub: Marstek
+                  address: 42020
+                  unit: 1
+                  value: >-
+                    {{ states('input_number.marstek_discharging_charging_power')
+                    | int | abs }}
+                action: modbus.write_register
+              - data:
+                  hub: Marstek
+                  address: 42010
+                  unit: 1
+                  value: 1
+                action: modbus.write_register

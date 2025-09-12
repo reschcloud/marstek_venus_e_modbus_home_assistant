@@ -3,8 +3,8 @@
 
 type: sections
 max_columns: 4
-title: Marstek
-path: marstek
+title: Marstek Battery
+path: marstek_battery
 icon: mdi:home-battery
 sections:
   - type: grid
@@ -18,9 +18,9 @@ sections:
           rows: 1
       - type: markdown
         content: |-
-          **Only valid for controls:**
+          **Only valid in controls section:**
           Negative power = DIScharge
-          Positive power = Charge
+          Positive power = charge
       - type: entities
         entities:
           - entity: automation.set_marstek_discharging_power
@@ -88,7 +88,7 @@ sections:
         grid_options:
           columns: 6
           rows: auto
-        name: Cell Temp
+        name: Cell Temperature
       - type: entities
         entities:
           - entity: sensor.marstek_ac_power
@@ -96,9 +96,9 @@ sections:
           - entity: sensor.marstek_battery_voltage
             name: Battery Voltage
           - entity: sensor.marstek_internal_temperature
-            name: Internal Temp
+            name: Internal Temperature
           - entity: sensor.marstek_min_cell_temperature
-            name: Min Cell Temp
+            name: Min Cell Voltage
         show_header_toggle: false
         footer:
           type: graph
@@ -106,7 +106,7 @@ sections:
           detail: 1
           hours_to_show: 72
           limits:
-            min: 0
+            min: 10
             max: 100
       - type: entities
         entities:

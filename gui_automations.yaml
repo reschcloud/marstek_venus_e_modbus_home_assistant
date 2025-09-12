@@ -63,7 +63,7 @@ mode: single
 
 # Set Marstek (Dis)Charging Power ######################################################################################################
 alias: Set Marstek (Dis)Charging Power
-description: 'Sets (Dis)charging power according to time pattern. The fixed discharging value (e.g. -250) may be substituted by templates of actual devices in your home to compensate their current consumption.'
+description: 'Sets (Dis)charging power according to time pattern. The fixed discharging value (e.g. -250) may be replaced by templates of actual devices in your home to compensate their current consumption.'
 triggers:
 - trigger: time_pattern
   seconds: /30
