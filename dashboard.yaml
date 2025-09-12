@@ -98,7 +98,7 @@ sections:
           - entity: sensor.marstek_internal_temperature
             name: Internal Temperature
           - entity: sensor.marstek_min_cell_temperature
-            name: Min Cell Voltage
+            name: Min Cell Temperature
         show_header_toggle: false
         footer:
           type: graph
