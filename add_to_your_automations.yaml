@@ -1,159 +1,149 @@
-# Automations for Marstek Venus E Modbus Controls
-# Add one-by-one to HA via GUI
+- id: marstek_sync_modbus_and_input_select
+  alias: Marstek Sync Modbus and Input Select
+  description: 'Sync Modbus sensor with input select, so that changes in HA are visible in the Marstek app and vice versa.'
+  triggers:
+  - entity_id: sensor.marstek_user_work_mode
+    id: sensor_to_input_select
+    trigger: state
+  - entity_id: input_select.marstek_user_work_mode_input_select
+    id: input_select_to_sensor
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: sensor_to_input_select
+      sequence:
+      - target:
+          entity_id: input_select.marstek_user_work_mode_input_select
+        data:
+          option: '{% set v = states(''sensor.marstek_user_work_mode'') | int
+            %} {% if v == 0 %}Manual{% elif v == 1 %}Anti-Feed{% elif v == 2 %}Trade
+            Mode{% else %}Manual{% endif %}
 
-
-# Marstek Sync Modbus and Input Select ######################################################################################################
-alias: Marstek Sync Modbus and Input Select
-description: 'Sync Modbus sensor with input select, so that changes in HA are visible in the Marstek app and vice versa.'
-triggers:
-- entity_id: sensor.marstek_user_work_mode
-  id: sensor_to_input_select
-  trigger: state
-- entity_id: input_select.marstek_user_work_mode_input_select
-  id: input_select_to_sensor
-  trigger: state
-conditions: []
-actions:
-- choose:
-  - conditions:
-    - condition: trigger
-      id: sensor_to_input_select
-    sequence:
-    - target:
-        entity_id: input_select.marstek_user_work_mode_input_select
-      data:
-        option: '{% set v = states(''sensor.marstek_user_work_mode'') | int
-          %} {% if v == 0 %}Manual{% elif v == 1 %}Anti-Feed{% elif v == 2 %}Trade
-          Mode{% else %}Manual{% endif %}
-
-          '
-      action: input_select.select_option
-  - conditions:
-    - condition: trigger
-      id: input_select_to_sensor
-    sequence:
-    - data:
-        hub: Marstek
-        address: 43000
-        unit: 1
-        value: "{% if is_state('input_select.marstek_user_work_mode_input_select',
-          'Manual') %}\n  0\n{% elif is_state('input_select.marstek_user_work_mode_input_select',
-          'Anti-Feed') %}\n  1\n{% elif is_state('input_select.marstek_user_work_mode_input_select',
-          'Trade Mode') %}\n  2\n{% else %}\n  0\n{% endif %}\n"
-      action: modbus.write_register
-mode: single
-
-
-# Run "Marstek Set Forcible Charge" on changes of (Dis)Charge Power ######################################################################################################
-alias: Run "Marstek Set Forcible Charge" on changes of (Dis)Charge Power
-description: 'Automatically sets (dis)charge target if changed.'
-triggers:
-- trigger: state
-  entity_id:
-  - input_number.marstek_discharging_charging_power
-conditions: []
-actions:
-- action: script.turn_on
-  metadata: {}
-  data: {}
-  target:
-    entity_id: script.marstek_set_forcible_charge
-mode: single
-
-
-# Set Marstek (Dis)Charging Power ######################################################################################################
-alias: Set Marstek (Dis)Charging Power
-description: 'Sets (Dis)charging power according to time pattern. The fixed discharging value (e.g. -250) may be replaced by templates of actual devices in your home to compensate their current consumption.'
-triggers:
-- trigger: time_pattern
-  seconds: /30
-conditions: []
-actions:
-- choose:
-  - conditions:
-    - condition: time
-      after: 10:00:00
-      before: 16:00:00
-    sequence:
-    - action: input_number.set_value
-      metadata: {}
-      data:
-        value: 1100
-      target:
-        entity_id: input_number.marstek_discharging_charging_power
-    alias: 'Charge during daytime'
-  - conditions:
-    - condition: time
-      after: 18:00:00
-      before: 08:00:00
-    sequence:
-    - action: input_number.set_value
-      metadata: {}
-      data:
-        value: -250
-      target:
-        entity_id: input_number.marstek_discharging_charging_power
-    alias: 'Discharge during nighttime'
-  default:
-  - action: input_number.set_value
+            '
+        action: input_select.select_option
+    - conditions:
+      - condition: trigger
+        id: input_select_to_sensor
+      sequence:
+      - data:
+          hub: Marstek
+          address: 43000
+          unit: 1
+          value: "{% if is_state('input_select.marstek_user_work_mode_input_select',
+            'Manual') %}\n  0\n{% elif is_state('input_select.marstek_user_work_mode_input_select',
+            'Anti-Feed') %}\n  1\n{% elif is_state('input_select.marstek_user_work_mode_input_select',
+            'Trade Mode') %}\n  2\n{% else %}\n  0\n{% endif %}\n"
+        action: modbus.write_register
+  mode: single
+- id: run_marstek_set_forcible_charge_on_changes_of_discharge_power
+  alias: Run "Marstek Set Forcible Charge" on changes of (Dis)Charge Power
+  description: 'Automatically sets (dis)charge target if changed.'
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_number.marstek_discharging_charging_power
+  conditions: []
+  actions:
+  - action: script.turn_on
     metadata: {}
-    data:
-      value: 0
+    data: {}
     target:
+      entity_id: script.marstek_set_forcible_charge
+  mode: single
+- id: set_marstek_discharging_power
+  alias: Set Marstek (Dis)Charging Power
+  description: 'Sets (Dis)charging power according to time pattern. The fixed discharging value (e.g. -250) may be replaced by templates of actual devices in your home to compensate their current consumption.'
+  triggers:
+  - trigger: time_pattern
+    seconds: /30
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: time
+        after: 10:00:00
+        before: 16:00:00
+      sequence:
+      - action: input_number.set_value
+        metadata: {}
+        data:
+          value: 1100
+        target:
+          entity_id: input_number.marstek_discharging_charging_power
+      alias: 'Charge during daytime'
+    - conditions:
+      - condition: time
+        after: 18:00:00
+        before: 08:00:00
+      sequence:
+      - action: input_number.set_value
+        metadata: {}
+        data:
+          value: -250
+        target:
+          entity_id: input_number.marstek_discharging_charging_power
+      alias: 'Discharge during nighttime'
+    default:
+    - action: input_number.set_value
+      metadata: {}
+      data:
+        value: 0
+      target:
+        entity_id: input_number.marstek_discharging_charging_power
+      alias: 'Else: Set power to 0'
+  mode: single
+- id: re_activate_marstek_rs485_control_mode
+  alias: Re-activate Marstek RS485 Control Mode
+  description: >-
+    Resets RS485 Control Mode to ON, if the target (dis)charge power differs significantly from the actual value. Exceptions: Will not run, if the target ist over 800W (in case your Marstek ist set to the default max. output of 800W) or if the SoC is below 15% or above 95%, where it is plausible that the target cannot be met.
+  triggers:
+    - trigger: template
+      value_template: |-
+        {{
+        not (
+        -30 <
+        (states('input_number.marstek_discharging_charging_power')|float
+        + states('sensor.marstek_ac_power')|float)
+        < 30
+        )
+        }}
+      for:
+        hours: 0
+        minutes: 30
+        seconds: 0
+  conditions:
+    - condition: numeric_state
+      entity_id: sensor.marstek_battery_soc
+      above: 15
+      below: 95
+    - condition: numeric_state
       entity_id: input_number.marstek_discharging_charging_power
-    alias: 'Else: Set power to 0'
-mode: single
-
-
-# Re-activate Marstek RS485 Control Mode ######################################################################################################
-alias: Re-activate Marstek RS485 Control Mode
-description: >-
-  Resets RS485 Control Mode to ON, if the target (dis)charge power differs significantly from the actual value. Exceptions: Will not run, if the target ist over 800W (in case your Marstek ist set to the default max. output of 800W) or if the SoC is below 15% or above 95%, where it is plausible that the target cannot be met.
-triggers:
-  - trigger: template
-    value_template: |-
-      {{
-      not (
-      -30 <
-      (states('input_number.marstek_discharging_charging_power')|float
-      + states('sensor.marstek_ac_power')|float)
-      < 30
-      )
-      }}
-    for:
-      hours: 0
-      minutes: 30
-      seconds: 0
-conditions:
-  - condition: numeric_state
-    entity_id: sensor.marstek_battery_soc
-    above: 15
-    below: 95
-  - condition: numeric_state
-    entity_id: input_number.marstek_discharging_charging_power
-    above: -800
-actions:
-  - action: switch.turn_off
-    metadata: {}
-    data: {}
-    target:
-      entity_id:
-        - switch.marstek_enable_rs485_control_mode
-    enabled: true
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 10
-      milliseconds: 0
-    enabled: true
-  - action: switch.turn_on
-    metadata: {}
-    data: {}
-    target:
-      entity_id:
-        - switch.marstek_enable_rs485_control_mode
-    enabled: true
-  - action: script.marstek_set_forcible_charge
-    metadata: {}
-    data: {}
-mode: single
+      above: -800
+  actions:
+    - action: switch.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+          - switch.marstek_enable_rs485_control_mode
+      enabled: true
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+      enabled: true
+    - action: switch.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+          - switch.marstek_enable_rs485_control_mode
+      enabled: true
+    - action: script.marstek_set_forcible_charge
+      metadata: {}
+      data: {}
+  mode: single
