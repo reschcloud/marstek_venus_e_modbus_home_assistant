@@ -230,6 +230,7 @@ modbus:
 # template #################################################################################################################################################################
 
 template:
+
   - sensor:
 
       - name: "Marstek Charge Cycles"
@@ -256,31 +257,29 @@ template:
           {% if mode == 21930 %}Enabled{% elif mode == 21947 %}Disabled{% else %}Unknown{% endif %}
 
 
-# switch ###############################################
+  - switch:
 
-switch:
-  - platform: template
-    switches:
-      marstek_rs485_control_mode_switch:
-        friendly_name: "Marstek RS485 Control Mode Switch"
-        unique_id: marstek_rs485_control_mode_switch
-        value_template: >
-          {% set mode = states('sensor.marstek_rs485_control_mode') | int %}
-          {{ mode == 21930 }}
-        turn_on:
-          service: modbus.write_register
-          data:
-            hub: Marstek
-            unit: 1
-            address: 42000
-            value: 21930
-        turn_off:
-          service: modbus.write_register
-          data:
-            hub: Marstek
-            unit: 1
-            address: 42000
-            value: 21947
+    - unique_id: marstek_rs485_control_mode_switch
+      name: Marstek RS485 Control Mode Switch
+      state: >
+        {% set mode = states('sensor.marstek_rs485_control_mode') | int %}
+        {{ mode == 21930 }}
+      turn_on:
+      - data:
+          hub: Marstek
+          unit: 1
+          address: 42000
+          value: 21930
+        action: modbus.write_register
+      turn_off:
+      - data:
+          hub: Marstek
+          unit: 1
+          address: 42000
+          value: 21947
+        action: modbus.write_register
+      
+      
 
 # input_number #############################################################################################################################################################
 
