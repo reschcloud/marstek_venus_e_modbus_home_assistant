@@ -7,8 +7,8 @@ modbus:
     host: 192.0.2.1
     port: 502
     delay: 1
-    message_wait_milliseconds: 35
-    timeout: 5
+    message_wait_milliseconds: 35     # May be set to ~70 on non-local connections between Home Assistant and the Modbus server
+    timeout: 5                        # May be set to ~10 on non-local connections between Home Assistant and the Modbus server
 
     sensors:
       - name: "Marstek Battery Voltage"
@@ -256,6 +256,26 @@ template:
           {% set mode = states('sensor.marstek_rs485_control_mode') | int %}
           {% if mode == 21930 %}Enabled{% elif mode == 21947 %}Disabled{% else %}Unknown{% endif %}
 
+      # Calculating Charge Power from "AC Power". Result is always positive, or 0 if DIScharging
+      - name: "Marstek Charging Power"
+        unique_id: marstek_charging_power
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        state: >
+          {% set p = states('sensor.marshmallow_ac_power') | float(0) %}
+          {{ (-p) if p < 0 else 0 }}
+
+      # Calculating DIS-Charge Power from "AC Power". Result is always positive, or 0 if charging
+      - name: "Marstek Discharging Power"
+        unique_id: marstek_discharging_power
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        state: >
+          {% set p = states('sensor.marshmallow_ac_power') | float(0) %}
+          {{ p if p > 0 else 0 }}
+
 
   - switch:
 
@@ -279,7 +299,31 @@ template:
           value: 21947
         action: modbus.write_register
       
-      
+
+
+# sensor #################################################################################################################################################################
+
+sensor:
+
+  # Calculates Total Charging Energy. This is more robust than using the values provided via Modbus which tend to erratic jumps sometimes.
+  - platform: integration
+    source: sensor.marstek_charging_power
+    name: "Marstek Total Charging Energy (Calculated)"
+    unique_id: marstek_total_charging_energy_calculated
+    unit_prefix: k
+    round: 3
+    method: trapezoidal
+
+  # Calculates Total DIS-Charging Energy. This is more robust than using the values provided via Modbus which tend to erratic jumps sometimes.
+  - platform: integration
+    source: sensor.marstek_discharging_power
+    name: "Marstek Total DIS-Charging Energy (Calculated)"
+    unique_id: marstek_total_discharging_energy_calculated
+    unit_prefix: k
+    round: 3
+    method: trapezoidal
+
+   
 
 # input_number #############################################################################################################################################################
 
