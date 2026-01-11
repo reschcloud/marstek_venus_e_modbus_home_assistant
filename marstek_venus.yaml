@@ -242,8 +242,15 @@ template:
         unique_id: marstek_efficiency
         unit_of_measurement: "%"
         state_class: measurement
-        state: "{{ ((states('sensor.marstek_total_discharging_energy')|float / states('sensor.marstek_total_charging_energy')|float) *100 )|round(0) }}"
-
+        state: >
+          {% set charging = states('sensor.marstek_total_charging_energy') | float(0) %}
+          {% set discharging = states('sensor.marstek_total_discharging_energy') | float(0) %}
+          {% if charging > 0 %}
+            {{ ((discharging / charging) * 100) | round(0) }}
+          {% else %}
+            0
+          {% endif %}
+          
       - name: "Marstek Force Charge/Discharge Mode Status"
         unique_id: marstek_force_charge_discharge_mode_status
         state: >
