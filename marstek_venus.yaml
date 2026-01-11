@@ -247,13 +247,13 @@ template:
       - name: "Marstek Force Charge/Discharge Mode Status"
         unique_id: marstek_force_charge_discharge_mode_status
         state: >
-          {% set mode = states('sensor.marstek_force_charge_discharge_mode') | int %}
+          {% set mode = states('sensor.marstek_force_charge_discharge_mode') | int(0) %}
           {% if mode == 0 %}Stop{% elif mode == 1 %}Charge{% elif mode == 2 %}Discharge{% else %}Unknown{% endif %}
 
       - name: "Marstek RS485 Control Mode Status"
         unique_id: marstek_rs485_control_mode_status
         state: >
-          {% set mode = states('sensor.marstek_rs485_control_mode') | int %}
+          {% set mode = states('sensor.marstek_rs485_control_mode') | int(0) %}
           {% if mode == 21930 %}Enabled{% elif mode == 21947 %}Disabled{% else %}Unknown{% endif %}
 
       # Calculating Charge Power from "AC Power". Result is always positive, or 0 if DIScharging
@@ -282,7 +282,7 @@ template:
     - unique_id: marstek_rs485_control_mode_switch
       name: Marstek RS485 Control Mode Switch
       state: >
-        {% set mode = states('sensor.marstek_rs485_control_mode') | int %}
+        {% set mode = states('sensor.marstek_rs485_control_mode') | int(0) %}
         {{ mode == 21930 }}
       turn_on:
       - data:
