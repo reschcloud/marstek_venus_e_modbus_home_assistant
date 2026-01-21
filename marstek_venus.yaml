@@ -270,7 +270,7 @@ template:
         device_class: power
         state_class: measurement
         state: >
-          {% set p = states('sensor.marshmallow_ac_power') | float(0) %}
+          {% set p = states('sensor.marstek_ac_power') | float(0) %}
           {{ (-p) if p < 0 else 0 }}
 
       # Calculating DIS-Charge Power from "AC Power". Result is always positive, or 0 if charging
@@ -280,7 +280,7 @@ template:
         device_class: power
         state_class: measurement
         state: >
-          {% set p = states('sensor.marshmallow_ac_power') | float(0) %}
+          {% set p = states('sensor.marstek_ac_power') | float(0) %}
           {{ p if p > 0 else 0 }}
 
 
